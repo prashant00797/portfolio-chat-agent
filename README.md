@@ -22,16 +22,16 @@ See `docs/architecture/`
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | FastAPI |
-| Agent | LangGraph (ReAct pattern) |
-| LLM | OpenAI gpt-4o-mini |
-| Embeddings | OpenAI text-embedding-3-small |
-| Vector Store | Pinecone |
-| Database | Supabase (PostgreSQL) |
-| Memory | LangGraph MemorySaver |
-| Streaming | Server-Sent Events (SSE) |
+| Layer        | Technology                    |
+| ------------ | ----------------------------- |
+| Framework    | FastAPI                       |
+| Agent        | LangGraph (ReAct pattern)     |
+| LLM          | OpenAI gpt-4o-mini            |
+| Embeddings   | OpenAI text-embedding-3-small |
+| Vector Store | Pinecone                      |
+| Database     | Supabase (PostgreSQL)         |
+| Memory       | LangGraph MemorySaver         |
+| Streaming    | Server-Sent Events (SSE)      |
 
 ---
 
@@ -90,6 +90,7 @@ SUPABASE_URL=
 SUPABASE_KEY=
 GITHUB_BASE_URL=https://api.github.com/users/YOUR_USERNAME/repos
 STREAM_DELAY=
+DUMMY_HEALTH_CHECK_BOT_ID=
 ```
 
 ### 3. Add your knowledge base
@@ -130,6 +131,7 @@ Swagger docs at `http://localhost:8000/docs`
 Streams a chat response as SSE.
 
 **Request:**
+
 ```json
 {
   "message": "What is your experience with React?",
@@ -138,6 +140,7 @@ Streams a chat response as SSE.
 ```
 
 **SSE Events:**
+
 ```
 data: {"type": "tool_call", "tool": "retrieve_relevant_chunks"}
 data: {"type": "token", "content": "Prashant"}
@@ -152,6 +155,7 @@ data: {"type": "error", "message": "..."}
 Tested on [Render](https://render.com) free tier.
 
 **Start command:**
+
 ```
 uvicorn main:app --host 0.0.0.0 --port $PORT
 ```

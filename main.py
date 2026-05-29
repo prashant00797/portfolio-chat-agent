@@ -1,11 +1,16 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from slowapi.errors import RateLimitExceeded
 from slowapi import _rate_limit_exceeded_handler
 from app.agent.graph import create_agent_graph
 from app.api.routes import chat_router
 from app.core.limiter import limiter
+from app.services.supabase_service import sc
+from app.core.config import get_settings
+
+config = get_settings()
 
 @asynccontextmanager
 async def lifespan(app:FastAPI):
@@ -35,5 +40,14 @@ app.include_router(chat_router.router,prefix="/api")
 
 
 @app.api_route("/health",methods=["GET","HEAD"])
-async def health():
+def health():
     return {"status": "ok"}
+
+
+@app.api_route("/health/db",methods=["GET","HEAD"])
+def health_db():
+    try:
+        sc.table("users").select("id").eq("id",config.DUMMY_HEALTH_CHECK_BOT_ID).execute()
+        return {"db": "ok"}
+    except Exception:
+        return JSONResponse(status_code=503,content={"db": "unreachable"})
